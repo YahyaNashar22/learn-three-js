@@ -124,6 +124,41 @@ box2.position.set(10, 10, 0);
 box2.castShadow = true;
 scene.add(box2);
 
+const plane2Geometry = new THREE.PlaneGeometry(10, 10, 10, 10);
+const plane2Material = new THREE.MeshBasicMaterial({
+    color: 0xFFFFFF,
+    wireframe: true
+});
+const plane2 = new THREE.Mesh(plane2Geometry, plane2Material);
+scene.add(plane2);
+plane2.position.set(10, 10, 15);
+
+plane2.geometry.attributes.position.array[0] -= 10 * Math.random();
+plane2.geometry.attributes.position.array[1] -= 10 * Math.random();
+plane2.geometry.attributes.position.array[2] -= 10 * Math.random();
+const lastPointZ = plane2.geometry.attributes.position.array.length - 1;
+plane2.geometry.attributes.position.array[lastPointZ] -= 10 * Math.random();
+
+// const vShader = `
+// void main(){
+//     gl_position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+// }`;
+
+// const fShader = `
+// void main(){
+//     gl_FragColor =  vec4(0.5, 0.5, 1.0, 1.0);
+// }`;
+
+const sphere2Geometry = new THREE.SphereGeometry(4);
+const sphere2Material = new THREE.ShaderMaterial({
+    vertexShader: document.getElementById("vertexShader").textContent,
+    fragmentShader: document.getElementById("fragmentShader").textContent
+});
+
+const sphere2 = new THREE.Mesh(sphere2Geometry, sphere2Material);
+scene.add(sphere2);
+sphere2.position.set(-5, 10, 10);
+
 const gui = new dat.GUI();
 
 const options = {
@@ -167,7 +202,7 @@ const mousePosition = new THREE.Vector2();
 // get the coordinates of the cursor
 window.addEventListener('mousemove', function (e) {
     mousePosition.x = (e.clientX / window.innerWidth) * 2 - 1;
-    mousePosition.y = - ((e.clientY / window.innerHeight) * 2 + 1);
+    mousePosition.y = -((e.clientY / window.innerHeight) * 2 - 1);
 });
 
 const rayCaster = new THREE.Raycaster();
@@ -199,10 +234,18 @@ function animate(time) {
 
     for (let i = 0; i < intersects.length; i++) {
         if (intersects[i].object.id === sphereId) {
-            const randomColor = Math.floor(Math.random() * 0xffffff);
-            intersects[i].object.material.color.set(randomColor)
+            // Generate a random hex color
+
+            intersects[i].object.material.color.set(0xEAFAAf);
         }
     }
+
+    plane2.geometry.attributes.position.array[0] -= 100 * Math.random();
+    plane2.geometry.attributes.position.array[1] -= 100 * Math.random();
+    plane2.geometry.attributes.position.array[2] -= 100 * Math.random();
+    plane2.geometry.attributes.position.array[lastPointZ] -= 100 * Math.random();
+    // * IMPORTANT FOR ANIMATION TO WORK 
+    plane2.geometry.attributes.position.needsUpdate = true;
 
     renderer.render(scene, camera);
 }
