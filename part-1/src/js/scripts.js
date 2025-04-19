@@ -170,7 +170,7 @@ assetLoader.load(bottle.href, function (gltf) {
     const model = gltf.scene;
     scene.add(model);
     model.position.set(-12, 4, 10);
-    model.scale.set(30,30,30);
+    model.scale.set(30, 30, 30);
 }, undefined, function (error) {
     console.log(error)
 });
@@ -269,4 +269,11 @@ function animate(time) {
     renderer.render(scene, camera);
 }
 
-renderer.setAnimationLoop(animate)
+renderer.setAnimationLoop(animate);
+
+
+window.addEventListener('resize', function () {
+    camera.aspect = this.window.innerWidth / this.window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(this.window.innerWidth, this.window.innerHeight)
+});
