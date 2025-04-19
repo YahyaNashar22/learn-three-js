@@ -109,8 +109,17 @@ scene.background = cubeTextureLoader.load([
 ])
 
 const box2Geometry = new THREE.BoxGeometry();
-const box2Material = new THREE.MeshStandardMaterial({ map: textureLoader.load(nebula) });
-const box2 = new THREE.Mesh(box2Geometry, box2Material);
+// const box2Material = new THREE.MeshStandardMaterial({ map: textureLoader.load(nebula) });
+const box2MultiMaterial = [
+    new THREE.MeshBasicMaterial({ map: textureLoader.load(stars) }),
+    new THREE.MeshBasicMaterial({ map: textureLoader.load(stars) }),
+    new THREE.MeshBasicMaterial({ map: textureLoader.load(stars) }),
+    new THREE.MeshBasicMaterial({ map: textureLoader.load(nebula) }),
+    new THREE.MeshBasicMaterial({ map: textureLoader.load(stars) }),
+    new THREE.MeshBasicMaterial({ map: textureLoader.load(nebula) })
+
+];
+const box2 = new THREE.Mesh(box2Geometry, box2MultiMaterial);
 box2.position.set(10, 10, 0);
 box2.castShadow = true;
 scene.add(box2);
@@ -153,6 +162,19 @@ gui.add(options, 'spotlightZ', 0, 100);
 
 let step = 0;
 
+const mousePosition = new THREE.Vector2();
+
+// get the coordinates of the cursor
+window.addEventListener('mousemove', function (e) {
+    mousePosition.x = (e.clientX / window.innerWidth) * 2 - 1;
+    mousePosition.y = - ((e.clientY / window.innerHeight) * 2 + 1);
+});
+
+const rayCaster = new THREE.Raycaster();
+
+const sphereId = sphere.id;
+
+
 function animate(time) {
     box.rotation.x = time / 1000;
     box.rotation.y = time / 1000;
@@ -171,6 +193,16 @@ function animate(time) {
 
     sLightHelper.update();
 
+    rayCaster.setFromCamera(mousePosition, camera);
+    const intersects = rayCaster.intersectObjects(scene.children);
+    console.log(intersects);
+
+    for (let i = 0; i < intersects.length; i++) {
+        if (intersects[i].object.id === sphereId) {
+            const randomColor = Math.floor(Math.random() * 0xffffff);
+            intersects[i].object.material.color.set(randomColor)
+        }
+    }
 
     renderer.render(scene, camera);
 }
