@@ -1,10 +1,15 @@
 import * as THREE from "three";
 import * as dat from 'dat.gui';
 import { OrbitControls } from "three/examples/jsm/Addons.js";
+import { GLTFLoader } from "three/examples/jsm/Addons.js";
+import { modelScale } from "three/src/nodes/TSL.js";
 
 
 const nebula = new URL("../images/start_dust.png", import.meta.url).href;
 const stars = new URL("../images/stars.png", import.meta.url).href;
+
+const bottle = new URL("../models/bottle.glb", import.meta.url);
+
 
 
 const renderer = new THREE.WebGLRenderer();
@@ -159,6 +164,17 @@ const sphere2 = new THREE.Mesh(sphere2Geometry, sphere2Material);
 scene.add(sphere2);
 sphere2.position.set(-5, 10, 10);
 
+const assetLoader = new GLTFLoader();
+
+assetLoader.load(bottle.href, function (gltf) {
+    const model = gltf.scene;
+    scene.add(model);
+    model.position.set(-12, 4, 10);
+    model.scale.set(30,30,30);
+}, undefined, function (error) {
+    console.log(error)
+});
+
 const gui = new dat.GUI();
 
 const options = {
@@ -230,7 +246,6 @@ function animate(time) {
 
     rayCaster.setFromCamera(mousePosition, camera);
     const intersects = rayCaster.intersectObjects(scene.children);
-    console.log(intersects);
 
     for (let i = 0; i < intersects.length; i++) {
         if (intersects[i].object.id === sphereId) {
@@ -240,10 +255,14 @@ function animate(time) {
         }
     }
 
-    plane2.geometry.attributes.position.array[0] -= 100 * Math.random();
-    plane2.geometry.attributes.position.array[1] -= 100 * Math.random();
-    plane2.geometry.attributes.position.array[2] -= 100 * Math.random();
-    plane2.geometry.attributes.position.array[lastPointZ] -= 100 * Math.random();
+    plane2.geometry.attributes.position.array[0] -= 10 * Math.random();
+    plane2.geometry.attributes.position.array[1] -= 10 * Math.random();
+    plane2.geometry.attributes.position.array[2] -= 10 * Math.random();
+    plane2.geometry.attributes.position.array[lastPointZ] -= 10 * Math.random();
+    plane2.geometry.attributes.position.array[lastPointZ - 1] -= 10 * Math.random();
+    plane2.geometry.attributes.position.array[lastPointZ - 2] -= 10 * Math.random();
+
+
     // * IMPORTANT FOR ANIMATION TO WORK 
     plane2.geometry.attributes.position.needsUpdate = true;
 
