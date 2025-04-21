@@ -1,0 +1,19 @@
+{
+  "name": "object-rotation",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "parcel ./src/index.html --no-cache"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "buffer": "^6.0.3",
+    "parcel": "^2.14.4"
+  },
+  "dependencies": {
+    "three": "^0.175.0"
+  }
+}
