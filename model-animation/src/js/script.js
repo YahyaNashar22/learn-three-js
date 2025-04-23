@@ -21,7 +21,7 @@ renderer.setClearColor(0xA3A3A3); // bg color
 
 const orbit = new OrbitControls(camera, renderer.domElement);
 
-camera.position.set(-90, 140, 140);
+camera.position.set(10, 4, 10);
 orbit.update();
 
 const grid = new THREE.GridHelper(30, 30);
@@ -29,16 +29,43 @@ scene.add(grid);
 
 const assetLoader = new GLTFLoader();
 
+let mixer;
 assetLoader.load(doggyUrl.href, function (gltf) {
     const model = gltf.scene;
     scene.add(model);
+
+    // The mixer is the animation player, like the timeline in blender
+    mixer = new THREE.AnimationMixer(model);
+    // Get all applications
+    const clips = gltf.animations;
+
+    // * CASE 1: select specific animation by name
+    // ? Get the name of the application
+    // const clip = THREE.AnimationClip.findByName(clips, 'HeadAction');
+    // ? Convert the clip into a playable action
+    // const action = mixer.clipAction(clip);
+    // ? play animation
+    // action.play();
+
+    // * CASE 2: select all animations
+    clips.forEach(function (clip) {
+        const action = mixer.clipAction(clip);
+        action.play();
+    });
+
 },
     undefined, function (error) {
         console.log(error)
     });
 
-    
+const clock = new THREE.Clock();
 function animate() {
+    // ensure mixer is loaded first
+    if (mixer) {
+        // play the animation
+        mixer.update(clock.getDelta());
+    }
+
     renderer.render(scene, camera);
 }
 
