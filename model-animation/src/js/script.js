@@ -1,5 +1,7 @@
 import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/Addons.js";
+import { GLTFLoader, OrbitControls } from "three/examples/jsm/Addons.js";
+
+const doggyUrl = new URL('../assets/doggo2.glb', import.meta.url);
 
 
 const renderer = new THREE.WebGLRenderer();
@@ -15,12 +17,27 @@ const camera = new THREE.PerspectiveCamera(
     1000
 );
 
+renderer.setClearColor(0xA3A3A3); // bg color
+
 const orbit = new OrbitControls(camera, renderer.domElement);
 
 camera.position.set(-90, 140, 140);
 orbit.update();
 
+const grid = new THREE.GridHelper(30, 30);
+scene.add(grid);
 
+const assetLoader = new GLTFLoader();
+
+assetLoader.load(doggyUrl.href, function (gltf) {
+    const model = gltf.scene;
+    scene.add(model);
+},
+    undefined, function (error) {
+        console.log(error)
+    });
+
+    
 function animate() {
     renderer.render(scene, camera);
 }
