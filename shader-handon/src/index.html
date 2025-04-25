@@ -11,6 +11,7 @@
     </style>
   </head>
   <body>
+    <!--  VERY IMPORTANT IN ORDER TO PRACTICE GLSL  -->
     <script id="vertexShader" type="vertex">
       uniform float u_time;
       varying vec2 vUv;
@@ -31,7 +32,7 @@
         vec2 st = gl_FragCoord.xy / u_resolution;
         vec4 texture = texture2D(image, vUv);
         float effect = abs(sin(texture.x + u_time));
-        gl_FragColor = vec4(vec3(effect), 1.0);
+        gl_FragColor = vec4(effect, texture.y, texture.z, 1.0);
       }
     </script>
     <script src="./js/script.js" type="module"></script>
