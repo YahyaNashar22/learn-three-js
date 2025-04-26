@@ -40,6 +40,35 @@ const plane = new THREE.Plane();
 // emit the ray between the camera and the cursor
 const raycaster = new THREE.Raycaster();
 
+// keep updating the mouse variable with the normalized coordinates of the cursor
+window.addEventListener('mousemove', function(e){
+    mouse.x = (e.clientX / this.window.innerWidth) * 2 -1 ;
+    mouse.y = -(e.clientY / this.window.innerHeight) * 2 + 1;
+    // keep updating the plane normal with the coordinates of the unit normal vector
+    planeNormal.copy(camera.position).normalize();
+    // create the plane
+    // ? scene.position can be replaced with new THREE.Vector3(0, 0, 0)
+    plane.setFromNormalAndCoplanarPoint(planeNormal, scene.position);
+    // create ray
+    raycaster.setFromCamera(mouse, camera);
+    // get the intersection points
+    raycaster.ray.intersectPlane(plane, intersectionPoint);
+});
+
+// handle creating different objects on mouse click
+window.addEventListener('click', function(e){
+    const sphereGeo = new THREE.SphereGeometry(0.125, 30, 30);
+    const sphereMat = new THREE.MeshStandardMaterial({
+        color: 0xFFEA00,
+        metalness: 0,
+        roughness: 0
+    });
+    const sphereMesh = new THREE.Mesh(sphereGeo, sphereMat);
+    scene.add(sphereMesh);
+    // put the sphere at the right position by copying the intersection point.
+    sphereMesh.position.copy(intersectionPoint);
+})
+
 function animate() {
     renderer.render(scene, camera);
 }
