@@ -51,27 +51,65 @@ const world = new CANNON.World({
     gravity: new CANNON.Vec3(0, -9.81, 0)
 });
 
+const boxPhysMat = new CANNON.Material();
+
 const boxBody = new CANNON.Body({
     mass: 1,
     shape: new CANNON.Box(new CANNON.Vec3(1, 1, 1)),
-    position: new CANNON.Vec3(1, 20, 0)
+    position: new CANNON.Vec3(1, 20, 0),
+    material: boxPhysMat
 });
 world.addBody(boxBody);
+boxBody.angularVelocity.set(0, 10, 0);
+boxBody.angularDamping = 0.5;
+
+
+const spherePhysMat = new CANNON.Material();
 
 const sphereBody = new CANNON.Body({
-    mass: 1,
+    mass: 10,
     shape: new CANNON.Sphere(2),
-    position: new CANNON.Vec3(0, 15, 0)
+    position: new CANNON.Vec3(0, 15, 0),
+    material: spherePhysMat
 });
 world.addBody(sphereBody);
+sphereBody.linearDamping = 0.31;
 
+
+const groundPhysMat = new CANNON.Material();
 
 const groundBody = new CANNON.Body({
-    shape: new CANNON.Plane(),
-    type: CANNON.Body.STATIC
+    // ? we removed the Plane() shape because it's infinite and takes the whole scene.
+    // shape: new CANNON.Plane(),
+    // ? values are half of the values used when creating the geometry ( applicable on BOX )
+    // ? z value is set to 0.1 to be as thin as possible
+    shape: new CANNON.Box(new CANNON.Vec3(15, 15, 0.1)),
+    type: CANNON.Body.STATIC,
+    material: groundPhysMat
 });
 world.addBody(groundBody);
 groundBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0);
+
+
+const groundBoxContactMat = new CANNON.ContactMaterial(
+    groundPhysMat,
+    boxPhysMat,
+    {
+        friction: 0
+    }
+);
+
+const groundSphereContactMat = new CANNON.ContactMaterial(
+    groundPhysMat,
+    spherePhysMat,
+    {
+        restitution: 0.9
+    }
+);
+
+world.addContactMaterial(groundBoxContactMat);
+world.addContactMaterial(groundSphereContactMat);
+
 
 const timeStep = 1 / 60;
 
