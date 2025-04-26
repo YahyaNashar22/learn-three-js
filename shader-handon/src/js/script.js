@@ -45,7 +45,7 @@ const geometry = new THREE.PlaneGeometry(10, 10, 30, 30);
 const material = new THREE.ShaderMaterial({
     vertexShader: document.getElementById('vertexShader').textContent,
     fragmentShader: document.getElementById('fragmentShader').textContent,
-    wireframe: false,
+    wireframe: true,
     side: THREE.DoubleSide,
     uniforms
 });
