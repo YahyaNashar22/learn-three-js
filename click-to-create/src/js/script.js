@@ -65,7 +65,7 @@ window.addEventListener('click', function(e){
     });
     const sphereMesh = new THREE.Mesh(sphereGeo, sphereMat);
     scene.add(sphereMesh);
-    // put the sphere at the right position by copying the intersection point.
+    // put the sphere at the right position by copying the intersection point variable.
     sphereMesh.position.copy(intersectionPoint);
 })
 
